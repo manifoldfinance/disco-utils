@@ -86,9 +86,9 @@ jobs:
       env:
         GITHUB_PAT: ${{ secrets.PAT_REPO_MEOWSBITS }}
       run: |
-        git config --local user.name 'meows'
-        git config --local user.email 'b5c6@protonmail.com'
-        git remote set-url origin https://meowsbits:${GITHUB_PAT}@github.com/${GITHUB_REPOSITORY}.git
+        git config --local user.name 'foldx'
+        git config --local user.email 'janitor@manifoldfinance.com'
+        git remote set-url origin https://manifoldx:${GITHUB_PAT}@github.com/${GITHUB_REPOSITORY}.git
         git push origin etccore
     
     - uses: actions/checkout@v2
