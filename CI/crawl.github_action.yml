@@ -8,9 +8,9 @@ on:
 
 jobs:
   build:
-    if: github.repository == 'etclabscore/discv4-dns-lists'
+    # if: github.repository == 'etclabscore/discv4-dns-lists'
     name: Discv4-DNS-Crawler
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       ETH_DNS_DISCV4_CRAWLTIME: 30m
       ETH_DNS_DISCV4_PARENT_DOMAIN: blockd.info
@@ -31,15 +31,15 @@ jobs:
       - run: go version
 
       - name: Check out code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: etccore
-          token: ${{ secrets.PAT_REPO_MEOWSBITS }}
+          token: ${{ secrets.PAT_REPO_JANITOR }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: etccore
-          token: ${{ secrets.PAT_REPO_MEOWSBITS }}
+          token: ${{ secrets.PAT_REPO_JANITOR }}
       - name: Checkout submodules
         shell: bash
         run: |
@@ -56,7 +56,7 @@ jobs:
           make all
           echo "$(pwd)/build/bin" >> $GITHUB_PATH
           cd ..
-          git diff --quiet || { git add core-geth && git -c user.name='meows' -c user.email='b5c6@protonmail.com' commit --author='crawler <>' -m "ci update (core-geth:${latest_tag}) $GITHUB_RUN_ID:$GITHUB_RUN_NUMBER"; }
+          git diff --quiet || { git add core-geth && git -c user.name='janitor' -c user.email='janitor@manifoldfinance.com' commit --author='crawler <>' -m "ci update (core-geth:${latest_tag}) $GITHUB_RUN_ID:$GITHUB_RUN_NUMBER"; }
 
       - name: Setup secrets
         run: |
@@ -76,22 +76,22 @@ jobs:
 
       - name: Filter and sign
         run: |
-          ./.ci/filter_and_sign.sh classic kotti mordor
+          ./.ci/filter_and_sign.sh mainnet
 
       - name: Deploy to DNS
         run: |
-          ./.ci/deploy.sh classic kotti mordor
+          ./.ci/deploy.sh mainnet
 
       - name: Push
         env:
-          GITHUB_PAT: ${{ secrets.PAT_REPO_MEOWSBITS }}
+          GITHUB_PAT: ${{ secrets.PAT_REPO_JANITOR }}
         run: |
-          git config --local user.name 'foldx'
+          git config --local user.name 'janitor'
           git config --local user.email 'janitor@manifoldfinance.com'
-          git remote set-url origin https://manifoldx:${GITHUB_PAT}@github.com/${GITHUB_REPOSITORY}.git
+          git remote set-url origin https://manifoldfinance:${GITHUB_PAT}@github.com/${GITHUB_REPOSITORY}.git
           git push origin etccore
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: HandleIfFailure
         if: failure()
         uses: JasonEtco/create-an-issue@v2
